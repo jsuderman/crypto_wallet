@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto_wallet/net/api_methods.dart';
+import 'package:crypto_wallet/net/flutterfire.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -64,14 +65,47 @@ class _HomeViewState extends State<HomeView> {
 
                 return ListView(
                   children: snapshot.data.docs.map((document) {
-                    return Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text("Coin Name: ${document.id}"),
-                          Text(
-                              "Amount: \$${getValue(document.id, document.data()['Amount']).toStringAsFixed(2)}"),
-                        ],
+                    return Padding(
+                      padding: EdgeInsets.only(
+                        top: 5.0,
+                        left: 15.0,
+                        right: 15.0,
+                      ),
+                      child: Container(
+                        height: MediaQuery.of(context).size.height / 12,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.green),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            SizedBox(
+                              width: 5.0,
+                            ),
+                            Text(
+                              "Coin: ${document.id}",
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              "Amount: \$${getValue(document.id, document.data()['Amount']).toStringAsFixed(2)}",
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              onPressed: () async {
+                                await removeCoin(document.id);
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   }).toList(),
